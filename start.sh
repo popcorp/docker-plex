@@ -91,6 +91,17 @@ if [ -n "${PLEX_ALLOWED_NETWORKS}" ]; then
   setConfig allowedNetworks ${PLEX_ALLOWED_NETWORKS}
 fi
 
+
+if [ ! $(xmlstarlet sel -T -t -m "/Preferences" -v "@PlexOnlineToken" -n /config/Library/Application\ Support/Plex\ Media\ Server/Preferences.xml) ]; then
+  (sleep 15; curl 'http://127.0.0.1:32400/library/sections?name=Films&type=movie&agent=com.plexapp.agents.imdb&scanner=Plex%20Movie%20Scanner&language=fr&importFromiTunes=&location=%2Fdata' -X POST -H 'X-Plex-Platform-Version: 49.0') &
+fi
+
+setConfig FSEventLibraryUpdatesEnabled 1
+setConfig ScheduledLibraryUpdatesEnabled 1
+setConfig DlnaEnabled 0
+setConfig GdmEnabled 0
+setConfig TranscoderQuality 3
+
 #remove previous pid if it exists
 rm ~/Library/Application\ Support/Plex\ Media\ Server/plexmediaserver.pid
 
